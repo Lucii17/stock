@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gestión de Stock</title>
+</head>
+<body>
+  <h2>Cargar producto al stock</h2>
+
+ <form id="form-stock">
+  <label for="categoria">Categoría:</label>
+  <select id="categoria" name="categoria" onchange="mostrarCamposPorCategoria()">
+    <option value="">Seleccionar</option>
+    <option value="Pañales">Pañales</option>
+    <option value="Higiene">Higiene</option>
+    <option value="Accesorios">Accesorios</option>
+  </select>
+
+  <div id="campo-marca" style="display:none;">
+    <label for="marca">Marca:</label>
+    <select id="marca" name="marca" onchange="cargarLineas()">
+      <option value="">Seleccionar</option>
+      <option value="Huggies">Huggies</option>
+      <option value="Pampers">Pampers</option>
+      <option value="Babysec">Babysec</option>
+      <option value="Duffy">Duffy</option>
+      <option value="Estrella en Pañales">Estrella en Pañales</option>
+      <option value="Otra">Otra (escribir)</option>
+    </select>
+    <input type="text" id="marca-manual" name="marca-manual" placeholder="Especificar marca" style="display:none;" />
+  </div>
+
+  <div id="campo-linea" style="display:none;">
+    <label for="linea">Línea / Variante:</label>
+    <input type="text" name="linea" id="linea" placeholder="Ej: Protect Plus, Natural Care..." />
+  </div>
+
+  <div id="campo-talle" style="display:none;">
+    <label for="talle">Talle:</label>
+    <select id="talle" name="talle">
+      <option value="RN">RN</option>
+      <option value="P">P</option>
+      <option value="M">M</option>
+      <option value="G">G</option>
+      <option value="XG">XG</option>
+      <option value="XXG">XXG</option>
+      <option value="XXXG">XXXG</option>
+    </select>
+  </div>
+
+  <label for="detalle">Detalle / Tamaño (opcional):</label>
+  <input type="text" name="detalle" id="detalle" placeholder="Ej: 100ml, 20 unidades, etc." />
+
+  <label for="cantidad">Cantidad comprada:</label>
+  <input type="number" name="cantidad" id="cantidad" required />
+
+  <label for="precio">Precio unitario ($):</label>
+  <input type="number" name="precio" id="precio" step="0.01" required />
+
+  <label for="fecha">Fecha de compra:</label>
+  <input type="date" name="fecha" id="fecha" />
+
+  <label for="observaciones">Observaciones:</label>
+  <textarea name="observaciones" id="observaciones" rows="2" placeholder="Proveedor, flete, promos..."></textarea>
+
+  <button type="submit">Agregar al stock</button>
+</form>
+
+<script>
+function mostrarCamposPorCategoria() {
+  const categoria = document.getElementById("categoria").value;
+  const campoMarca = document.getElementById("campo-marca");
+  const campoLinea = document.getElementById("campo-linea");
+  const campoTalle = document.getElementById("campo-talle");
+
+  campoMarca.style.display = (categoria !== "") ? "block" : "none";
+  campoLinea.style.display = (categoria !== "") ? "block" : "none";
+  campoTalle.style.display = (categoria === "Pañales") ? "block" : "none";
+}
+
+function cargarLineas() {
+  const marca = document.getElementById("marca").value;
+  const inputManual = document.getElementById("marca-manual");
+  inputManual.style.display = (marca === "Otra") ? "block" : "none";
+}
+</script>
+
+
+</body>
+</html>
