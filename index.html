@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Gestión de Stock - Lucía Martín</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="bg-gray-100 text-gray-800">
+
   <!-- Menú de Navegación -->
   <header class="bg-blue-600 p-4">
     <nav class="max-w-7xl mx-auto flex justify-between items-center">
@@ -27,6 +27,7 @@
     <h2 class="text-2xl font-bold mb-4">Gestión de Stock</h2>
     <form id="form-stock">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Categoría -->
         <label for="categoria">Categoría:</label>
         <select id="categoria" name="categoria" class="p-2 border rounded" onchange="mostrarCamposPorCategoria()">
           <option value="">Seleccionar</option>
@@ -35,9 +36,9 @@
           <option value="Accesorios">Accesorios</option>
         </select>
       </div>
-      
+
       <!-- Marca -->
-      <div id="campo-marca" class="hidden">
+      <div id="campo-marca" class="hidden mt-4">
         <label for="marca">Marca:</label>
         <select id="marca" name="marca" class="p-2 border rounded" onchange="cargarLineas()">
           <option value="">Seleccionar</option>
@@ -52,13 +53,16 @@
       </div>
 
       <!-- Línea -->
-      <div id="campo-linea" class="hidden">
+      <div id="campo-linea" class="hidden mt-4">
         <label for="linea">Línea / Variante:</label>
-        <input type="text" name="linea" id="linea" class="p-2 border rounded" placeholder="Ej: Protect Plus, Natural Care..." />
+        <select id="linea" name="linea" class="p-2 border rounded">
+          <option value="">Seleccionar línea / variante</option>
+        </select>
+        <input type="text" id="linea-manual" name="linea-manual" class="p-2 border rounded mt-2 hidden" placeholder="Especificar línea" />
       </div>
 
       <!-- Talle -->
-      <div id="campo-talle" class="hidden">
+      <div id="campo-talle" class="hidden mt-4">
         <label for="talle">Talle:</label>
         <select id="talle" name="talle" class="p-2 border rounded">
           <option value="RN">RN</option>
@@ -71,7 +75,7 @@
         </select>
       </div>
 
-      <!-- Detalle y cantidad -->
+      <!-- Detalle, cantidad, precio, etc -->
       <label for="detalle" class="mt-4">Detalle / Tamaño (opcional):</label>
       <input type="text" name="detalle" id="detalle" class="p-2 border rounded mb-4" placeholder="Ej: 100ml, 20 unidades, etc." />
 
@@ -91,53 +95,74 @@
     </form>
   </section>
 
-  <!-- Sección de Compras -->
+  <!-- Secciones futuras -->
   <section id="compras" class="p-8 bg-gray-200">
     <h2 class="text-2xl font-bold mb-4">Registrar Compras</h2>
-    <p>Aquí podrás registrar tus compras de mercadería.</p>
-    <!-- Aquí irá el formulario para registrar compras -->
   </section>
 
-  <!-- Sección de Ventas -->
   <section id="ventas" class="p-8">
     <h2 class="text-2xl font-bold mb-4">Registrar Ventas</h2>
-    <p>Aquí podrás registrar las ventas realizadas.</p>
-    <!-- Aquí irá el formulario para registrar ventas -->
   </section>
 
-  <!-- Sección de Reportes -->
   <section id="reportes" class="p-8 bg-gray-200">
     <h2 class="text-2xl font-bold mb-4">Reportes y Ganancias</h2>
-    <p>Aquí podrás ver los reportes de ganancias y ventas.</p>
-    <!-- Aquí irían los reportes -->
   </section>
 
-  <!-- Footer -->
   <footer class="bg-blue-600 p-4 text-center text-white">
     <p>&copy; 2025 Lucía Martín - Todos los derechos reservados</p>
   </footer>
 
   <!-- Scripts -->
   <script>
-    // Función para mostrar campos según categoría
+    const lineasPorMarca = {
+      "Huggies": ["Natural Care", "Tripack", "Active Sec", "Classic", "Protect Plus"],
+      "Pampers": ["Confort Sec", "Premium Care", "Recién Nacido"],
+      "Babysec": ["Ultra", "Premium", "Super Premium"],
+      "Duffy": ["Clásico", "Premium", "Gel Plus"],
+      "Estrella en Pañales": ["Económico", "Día y Noche", "Premium"]
+    };
+
     function mostrarCamposPorCategoria() {
       const categoria = document.getElementById("categoria").value;
-      const campoMarca = document.getElementById("campo-marca");
-      const campoLinea = document.getElementById("campo-linea");
-      const campoTalle = document.getElementById("campo-talle");
-
-      campoMarca.style.display = (categoria !== "") ? "block" : "none";
-      campoLinea.style.display = (categoria !== "") ? "block" : "none";
-      campoTalle.style.display = (categoria === "Pañales") ? "block" : "none";
+      document.getElementById("campo-marca").style.display = categoria ? "block" : "none";
+      document.getElementById("campo-linea").style.display = categoria ? "block" : "none";
+      document.getElementById("campo-talle").style.display = categoria === "Pañales" ? "block" : "none";
     }
 
-    // Función para mostrar campo de marca manual si se selecciona "Otra"
     function cargarLineas() {
       const marca = document.getElementById("marca").value;
       const inputManual = document.getElementById("marca-manual");
-      inputManual.style.display = (marca === "Otra") ? "block" : "none";
+      const lineaSelect = document.getElementById("linea");
+      const lineaManual = document.getElementById("linea-manual");
+
+      // Mostrar u ocultar input de marca manual
+      inputManual.style.display = marca === "Otra" ? "block" : "none";
+
+      // Limpiar opciones anteriores
+      lineaSelect.innerHTML = '<option value="">Seleccionar línea / variante</option>';
+
+      if (marca === "Otra") {
+        lineaSelect.style.display = "none";
+        lineaManual.style.display = "block";
+        return;
+      }
+
+      lineaSelect.style.display = "block";
+      lineaManual.style.display = "none";
+
+      const lineas = lineasPorMarca[marca] || [];
+      if (lineas.length === 0) {
+        lineaManual.style.display = "block";
+        lineaSelect.style.display = "none";
+      } else {
+        lineas.forEach(linea => {
+          const option = document.createElement("option");
+          option.value = linea;
+          option.textContent = linea;
+          lineaSelect.appendChild(option);
+        });
+      }
     }
   </script>
 </body>
-
 </html>
